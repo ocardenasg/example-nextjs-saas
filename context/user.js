@@ -6,6 +6,7 @@ const Context = createContext()
 
 export function UserProvider(props) {
   const [user, setUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const router = useRouter()
 
@@ -27,6 +28,7 @@ export function UserProvider(props) {
         .single()
 
       setUser({ ...user, ...profile })
+      setIsLoading(false)
     }
 
     getUserProfile()
@@ -48,7 +50,9 @@ export function UserProvider(props) {
     })
   }
 
-  return <Context.Provider value={{ user, login, logout }} {...props} />
+  const sharedProps = { user, login, logout, isLoading }
+
+  return <Context.Provider value={sharedProps} {...props} />
 }
 
 export function useUser() {
