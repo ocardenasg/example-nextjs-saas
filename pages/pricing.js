@@ -1,4 +1,5 @@
 import initStripe from 'stripe'
+import { loadStripe } from '@stripe/stripe-js'
 
 import { useUser } from '@/context/user'
 
@@ -8,6 +9,23 @@ export default function Pricing({ plans = [] }) {
   const showCreateAccountButton = !user
   const showSubscriptionButton = !!user && !user?.is_subscribed
   const showManageSubscriptionButton = !!user && user?.is_subscribed
+
+  const processSubscription = planId => {
+    return async () => {
+      const request = await fetch(`/api/subscription/${planId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+        },
+      })
+      const response = await request.json()
+
+      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY)
+      await stripe.redirectToCheckout({ sessionId: response.id })
+
+      return response
+    }
+  }
 
   return (
     <main className="w-full max-w-3xl mx-auto py-16 flex justify-around">
@@ -26,7 +44,11 @@ export default function Pricing({ plans = [] }) {
                 {showManageSubscriptionButton && (
                   <button>Manage subscription</button>
                 )}
-                {showSubscriptionButton && <button>Subscribe</button>}
+                {showSubscriptionButton && (
+                  <button onClick={processSubscription(plan.id)}>
+                    Subscribe
+                  </button>
+                )}
               </div>
             )}
           </div>

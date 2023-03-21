@@ -16,6 +16,10 @@ export function UserProvider(props) {
         data: { user },
       } = await supabase.auth.getUser()
 
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
       if (!user) {
         setUser(null)
         return
@@ -27,7 +31,7 @@ export function UserProvider(props) {
         .eq('id', user.id)
         .single()
 
-      setUser({ ...user, ...profile })
+      setUser({ ...user, ...profile, ...session })
       setIsLoading(false)
     }
 
