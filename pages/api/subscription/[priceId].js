@@ -1,5 +1,5 @@
 import initStripe from 'stripe'
-import { supabase } from '@/utils/supabase'
+import { getServiceSupabase } from '@/utils/supabase'
 
 export default async function handler(req, res) {
   if (!req.headers.authorization) {
@@ -7,6 +7,7 @@ export default async function handler(req, res) {
   }
 
   const { authorization } = req.headers
+  const supabase = getServiceSupabase()
 
   const {
     data: { user },

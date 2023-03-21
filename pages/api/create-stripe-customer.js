@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabase'
+import { getServiceSupabase } from '@/utils/supabase'
 import initStripe from 'stripe'
 
 export default async function handler(req, res) {
@@ -12,6 +12,7 @@ export default async function handler(req, res) {
     email: req.body.record.email,
   })
 
+  const supabase = getServiceSupabase()
   await supabase
     .from('profile')
     .update({ stripe_customer: customer.id })
