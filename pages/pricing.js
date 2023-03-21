@@ -1,5 +1,6 @@
 import initStripe from 'stripe'
 import { loadStripe } from '@stripe/stripe-js'
+import Link from 'next/link'
 
 import { useUser } from '@/context/user'
 
@@ -42,7 +43,7 @@ export default function Pricing({ plans = [] }) {
                   <button onClick={login}>Create account</button>
                 )}
                 {showManageSubscriptionButton && (
-                  <button>Manage subscription</button>
+                  <Link href="/dashboard">Manage subscription</Link>
                 )}
                 {showSubscriptionButton && (
                   <button onClick={processSubscription(plan.id)}>

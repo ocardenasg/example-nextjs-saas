@@ -18,12 +18,12 @@ export default async function handler(req, res) {
     )
 
     const supabase = getServiceSupabase()
-    if (event.type === 'customer.subscription.created') {
+    if (event.type === 'customer.subscription.updated') {
       await supabase
         .from('profile')
         .update({
-          is_subscribed: true,
-          interval: event.data.object.items.data[0].plan.interval,
+          interval: event.data.object.plan.interval,
+          is_subscribed: event.data.object.plan.active,
         })
         .eq('stripe_customer', event.data.object.customer)
     }
