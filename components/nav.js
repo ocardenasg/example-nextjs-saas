@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useUser } from '@/context/user'
 
 export default function Nav() {
-  const user = useUser()
+  const { user } = useUser()
   return (
     <nav className="flex py-4 px-2 border-b boder-gray-200">
       <Link href="/">Home</Link>
