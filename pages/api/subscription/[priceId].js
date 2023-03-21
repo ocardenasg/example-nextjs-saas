@@ -40,8 +40,8 @@ export default async function handler(req, res) {
     line_items: lineItems,
     customer: stripe_customer,
     payment_method_types: ['card'],
-    success_url: 'http://localhost:3000/payment/success',
-    cancel_url: 'http://localhost:3000/payment/cancelled',
+    success_url: `${process.env.CLIENT_URL}/payment/success`,
+    cancel_url: `${process.env.CLIENT_URL}/payment/cancelled`,
   })
 
   return res.status(201).send({ id: session.id })
