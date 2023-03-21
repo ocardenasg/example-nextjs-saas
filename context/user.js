@@ -42,6 +42,31 @@ export function UserProvider(props) {
     })
   }, [])
 
+  useEffect(() => {
+    if (user) {
+      const subscription = supabase
+        .channel('any')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'profile',
+            filter: `id=eq.${user.id}`,
+          },
+          payload => {
+            debugger
+            setUser({ ...user, ...payload.new })
+          }
+        )
+        .subscribe()
+
+      return () => {
+        supabase.removeChannel(subscription)
+      }
+    }
+  }, [user])
+
   const logout = async () => {
     await supabase.auth.signOut()
     setUser(null)

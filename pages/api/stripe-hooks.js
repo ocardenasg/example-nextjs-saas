@@ -17,16 +17,29 @@ export default async function handler(req, res) {
       signingSecret
     )
 
-    const supabase = getServiceSupabase()
-    if (event.type === 'customer.subscription.updated') {
-      await supabase
-        .from('profile')
-        .update({
+    let updatedData
+    switch (event.type) {
+      case 'customer.subscription.created':
+        updatedData = {
+          is_subscribed: true,
           interval: event.data.object.plan.interval,
-          is_subscribed: event.data.object.plan.active,
-        })
-        .eq('stripe_customer', event.data.object.customer)
+        }
+        break
+      case 'customer.subscription.deleted':
+        updatedData = {
+          is_subscribed: false,
+        }
+        break
+
+      default:
+        return res.status(201).send(event)
     }
+
+    const supabase = getServiceSupabase()
+    await supabase
+      .from('profile')
+      .update(updatedData)
+      .eq('stripe_customer', event.data.object.customer)
 
     return res.status(201).send(event)
   } catch (error) {
